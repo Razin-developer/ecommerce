@@ -1,3 +1,5 @@
+import ProductSlider from '@/components/shared/product/product-slider'
+import { Card, CardContent } from '@/components/ui/card'
 import { HomeCard } from '@/components/shared/home/home-card'
 import { HomeCarousel } from '@/components/shared/home/home-carousel'
 import { getAllCategories, getProductsByTag, getProductsForCard } from '@/lib/actions/product.actions'
@@ -57,6 +59,7 @@ export default async function HomePage() {
     },
   ]
 
+  const bestSellingProducts = await getProductsByTag({ tag: 'best-seller' })
   const todaysDeals = await getProductsByTag({ tag: 'todays-deal' })
 
   return (
@@ -69,10 +72,17 @@ export default async function HomePage() {
             <ProductSlider title={"Today's Deals"} products={todaysDeals} />
           </CardContent>
         </Card>
+        <Card className='w-full rounded-none'>
+          <CardContent className='p-4 items-center gap-3'>
+            <ProductSlider
+              title='Best Selling Products'
+              products={bestSellingProducts}
+              hideDetails
+            />
+          </CardContent>
+        </Card>
       </div>
     </>
   )
 }
 
-import ProductSlider from '@/components/shared/product/product-slider'
-import { Card, CardContent } from '@/components/ui/card'
