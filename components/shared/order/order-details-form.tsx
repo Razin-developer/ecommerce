@@ -156,7 +156,7 @@ export default function OrderDetailsForm({
               </div>
             </div>
 
-            {!isPaid && ['Stripe', 'PayPal'].includes(paymentMethod) && (
+            {!isPaid && ['Stripe', 'Razorpay'].includes(paymentMethod) && (
               <Link
                 className={cn(buttonVariants(), 'w-full')}
                 href={`/checkout/${order._id}`}
