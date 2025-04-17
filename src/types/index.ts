@@ -4,6 +4,7 @@ import {
   ProductInputSchema,
   UserInputSchema,
   UserSignInSchema,
+  UserSignUpSchema,
 } from '@/lib/validator'
 import { z } from 'zod'
 
@@ -11,6 +12,7 @@ export type IProductInput = z.infer<typeof ProductInputSchema>
 // user
 export type IUserInput = z.infer<typeof UserInputSchema>
 export type IUserSignIn = z.infer<typeof UserSignInSchema>
+export type IUserSignUp = z.infer<typeof UserSignUpSchema>
 export type Data = {
   products: IProductInput[]
   headerMenus: {
