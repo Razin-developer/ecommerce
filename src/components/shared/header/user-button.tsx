@@ -28,7 +28,7 @@ export default async function UserButton() {
             <ChevronDown />
           </div>
         </DropdownMenuTrigger>
-        {session ? (
+        {session && session.user && session.user.email && session.user.name ? (
           <DropdownMenuContent className='w-56' align='end' forceMount>
             <DropdownMenuLabel className='font-normal'>
               <div className='flex flex-col space-y-1'>
