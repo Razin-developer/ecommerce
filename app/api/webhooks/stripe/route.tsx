@@ -3,11 +3,13 @@ import Stripe from 'stripe'
 
 import { sendPurchaseReceipt } from '@/emails'
 import Order from '@/lib/db/models/order.model'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import User from '@/lib/db/models/user.model' // ✅ This is the fix
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
 export async function POST(req: NextRequest) {
-  console.log("Testttttttttttt");
+  console.log("Testttttttttttt")
 
   const event = await stripe.webhooks.constructEvent(
     await req.text(),
@@ -20,7 +22,10 @@ export async function POST(req: NextRequest) {
     const orderId = charge.metadata.orderId
     const email = charge.billing_details.email
     const pricePaidInCents = charge.amount
+
+    // 🔧 Now this should work because User model is registered
     const order = await Order.findById(orderId).populate('user', 'email')
+
     if (order == null) {
       return new NextResponse('Bad Request', { status: 400 })
     }
@@ -33,15 +38,19 @@ export async function POST(req: NextRequest) {
       email_address: email!,
       pricePaid: (pricePaidInCents / 100).toFixed(2),
     }
+
     await order.save()
+
     try {
       await sendPurchaseReceipt({ order })
     } catch (err) {
       console.log('email error', err)
     }
+
     return NextResponse.json({
       message: 'updateOrderToPaid was successful',
     })
   }
+
   return new NextResponse()
 }
