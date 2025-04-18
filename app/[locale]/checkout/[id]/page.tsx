@@ -7,7 +7,7 @@ export const metadata = {
   title: 'Payment',
 };
 
-const CheckoutPaymentPage = async ({ params }: { params: { id: string } }) => {
+const CheckoutPaymentPage = async ({ params }: { params: Promise<{ id: string; locale: string }> }) => {
   const { id } = await params;
   const order = await getOrderById(id);
   if (!order) return notFound();

@@ -46,7 +46,7 @@ const PaymentClientWrapper = ({ order, session, stripeSecretKey }: { order: IOrd
     };
 
     fetchPaymentDetails();
-  }, [order, getCurrency]);
+  }, [order, getCurrency, stripeSecretKey]);
 
   return (
     <PaymentForm
