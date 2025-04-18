@@ -14,7 +14,7 @@ const CheckoutPaymentPage = async ({ params }: { params: Promise<{ id: string; l
 
   const session = await auth();
 
-  console.log(process.env); // Log the order object for debugging
+  console.log(process.env); // Log the order object for debugging    );
 
   return (
     <PaymentClientWrapper order={order} session={session} stripeSecretKey={process.env.STRIPE_SECRET_KEY as string} />

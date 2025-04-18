@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import Stripe from 'stripe';
-import { razorpayApi } from '@/lib/razorpay';
 import useSettingStore from '@/hooks/use-setting-store';
 import PaymentForm from './payment-form';
 import { IOrder } from '@/lib/db/models/order.model';
@@ -29,10 +28,16 @@ const PaymentClientWrapper = ({ order, session, stripeSecretKey }: { order: IOrd
 
         setClientSecret(paymentIntent.client_secret);
       } else if (order.paymentMethod === 'Razorpay' && !order.isPaid) {
-        const result = await razorpayApi.createOrder(
-          order.totalPrice * getCurrency().convertRate,
-          getCurrency().code
-        );
+        const result = await fetch('/api/payment/razorpay/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: order.totalPrice * getCurrency().convertRate,
+            currency: getCurrency().code,
+          }),
+        }).then(res => res.json());
 
         console.log('Razorpay order result:', result); // Log the result for debugging
 
