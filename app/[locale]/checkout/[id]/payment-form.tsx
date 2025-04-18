@@ -113,7 +113,7 @@ export default function OrderDetailsForm({
           router.push(`/account/orders/${order._id}`);
         } else {
           toast({
-            description: verificationData.message,
+            description: verificationData.message + " Check your order status.",
             variant: 'destructive',
           });
           // Optionally, handle payment failure (e.g., update order status)
