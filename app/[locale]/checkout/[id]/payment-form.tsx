@@ -13,6 +13,7 @@ import StripeForm from './stripe-form';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import useSettingStore from '@/hooks/use-setting-store';
+import { useTranslations } from 'next-intl';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
@@ -39,6 +40,7 @@ export default function OrderDetailsForm({
   const router = useRouter();
   const { getCurrency } = useSettingStore();
   const { toast } = useToast();
+  const t = useTranslations('Checkout');
   const {
     shippingAddress,
     items,
@@ -115,6 +117,15 @@ export default function OrderDetailsForm({
           toast({
             description: verificationData.message + " Check your order status.",
             variant: 'destructive',
+            action: (
+              <Button
+                onClick={() => {
+                  router.push(`/account/orders/${order._id}`)
+                }}
+              >
+                {t('Go to Order Details')}
+              </Button>
+            ),
           });
           // Optionally, handle payment failure (e.g., update order status)
         }
