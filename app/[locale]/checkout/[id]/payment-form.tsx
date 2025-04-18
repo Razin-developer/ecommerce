@@ -12,6 +12,7 @@ import ProductPrice from '@/components/shared/product/product-price';
 import StripeForm from './stripe-form';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import useSettingStore from '@/hooks/use-setting-store';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
@@ -36,6 +37,7 @@ export default function OrderDetailsForm({
   razorpayOrder: string | undefined | null;
 }) {
   const router = useRouter();
+  const { getCurrency } = useSettingStore();
   const { toast } = useToast();
   const {
     shippingAddress,
@@ -81,8 +83,8 @@ export default function OrderDetailsForm({
       order_id: razorpayOrder,
       name: 'NxtAmzn',
       description: 'Payment for your order',
-      amount: Math.round(totalPrice * 100), // Amount in paise
-      currency: 'INR', // Or your store's currency
+      amount: Math.round(totalPrice * getCurrency().convertRate * 100), // Amount in paise
+      currency: getCurrency().code, // Or your store's currency
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handler: async function (response: any) {
         // Verify payment signature on the server

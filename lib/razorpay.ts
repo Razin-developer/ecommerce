@@ -11,13 +11,21 @@ export const razorpayApi = {
   createOrder: async (amount: number, currency: string = 'INR') => {
     try {
       const order = await razorpay.orders.create({
-        amount: Math.round(amount * 100), // Razorpay expects amount in paise (cents for INR)
-        currency: currency,
-        receipt: `order_${Date.now()}`, // Unique receipt ID
+        amount: amount * 100,
+        currency,
+        receipt: `order_${Date.now()}`,
       });
+
+      if (!order || !order.id) {
+        throw new Error('Failed to create Razorpay order');
+      }
+
+      console.log('Razorpay Order:', order); // <== log the order object for debugging
       return { success: true, data: order };
-    } catch (error) {
-      return { success: false, message: formatError(error) };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error('Razorpay Order Error:', error); // <== log the raw error
+      return { success: false, message: formatError(error) || 'Failed to create order' };
     }
   },
 
