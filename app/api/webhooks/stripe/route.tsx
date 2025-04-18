@@ -24,8 +24,9 @@ export async function POST(req: NextRequest) {
 
     await connectToDatabase();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const User = (await import('@/lib/db/models/user.model')).default;
+
+    console.log('User model:', User); // should not be undefined or empty
 
     // 🔧 Now this should work because User model is registered
     const order = await Order.findById(orderId).populate('user', 'email')
