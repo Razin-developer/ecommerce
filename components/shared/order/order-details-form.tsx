@@ -168,12 +168,16 @@ export default function OrderDetailsForm({
             {isAdmin && !isPaid && paymentMethod === 'Cash On Delivery' && (
               <ActionButton
                 caption='Mark as paid'
+                btnText=" Try Reloading"
+                Reloading={true}
                 action={() => updateOrderToPaid(order._id)}
               />
             )}
             {isAdmin && isPaid && !isDelivered && (
               <ActionButton
                 caption='Mark as delivered'
+                btnText=" Try Reloading"
+                Reloading={true}
                 action={() => deliverOrder(order._id)}
               />
             )}

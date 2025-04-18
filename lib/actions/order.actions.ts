@@ -66,27 +66,38 @@ export async function updateOrderToPaid(orderId: string) {
   try {
     await connectToDatabase()
 
-    const User = (await import('@/lib/db/models/user.model')).default;
+    const User = (await import('@/lib/db/models/user.model')).default
 
-    console.log('User model:', User); // should not be undefined or empty
+    console.log('User model:', User) // should not be undefined or empty;
 
     const order = await Order.findById(orderId).populate<{
       user: { email: string; name: string }
     }>('user', 'name email')
+
     if (!order) throw new Error('Order not found')
     if (order.isPaid) throw new Error('Order is already paid')
+
     order.isPaid = true
     order.paidAt = new Date()
     await order.save()
+
     if (!process.env.MONGODB_URI?.startsWith('mongodb://localhost'))
       await updateProductStock(order._id)
-    if (order.user.email) await sendPurchaseReceipt({ order })
+
+    // 🛡️ Safe check to avoid null crash
+    if (order.user?.email) {
+      await sendPurchaseReceipt({ order })
+    } else {
+      console.warn('Order has no user or email:', order)
+    }
+
     revalidatePath(`/account/orders/${orderId}`)
     return { success: true, message: 'Order paid successfully' }
   } catch (err) {
     return { success: false, message: formatError(err) }
   }
 }
+
 const updateProductStock = async (orderId: string) => {
   const session = await mongoose.connection.startSession()
 

@@ -11,12 +11,16 @@ export default function ActionButton({
   className = 'w-full',
   variant = 'default',
   size = 'default',
+  btnText,
+  Reloading,
 }: {
   caption: string
   action: () => Promise<{ success: boolean; message: string }>
   className?: string
   variant?: 'default' | 'outline' | 'destructive'
   size?: 'default' | 'sm' | 'lg'
+  btnText?: string
+  Reloading?: boolean
 }) {
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
@@ -33,6 +37,20 @@ export default function ActionButton({
           toast({
             variant: res.success ? 'default' : 'destructive',
             description: res.message,
+            action: btnText?.trim() && Reloading ? (
+              <Button
+                variant='outline'
+                size='sm'
+                className='rounded-full'
+                onClick={() => {
+                  if (Reloading) {
+                    window.location.reload()
+                  }
+                }}
+              >
+                {btnText}
+              </Button>
+            ) : undefined,
           })
         })
       }
