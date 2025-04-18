@@ -5,6 +5,7 @@ import { sendPurchaseReceipt } from '@/emails'
 import Order from '@/lib/db/models/order.model'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import User from '@/lib/db/models/user.model' // ✅ This is the fix
+import { connectToDatabase } from '@/lib/db'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
@@ -22,6 +23,8 @@ export async function POST(req: NextRequest) {
     const orderId = charge.metadata.orderId
     const email = charge.billing_details.email
     const pricePaidInCents = charge.amount
+
+    await connectToDatabase();
 
     // 🔧 Now this should work because User model is registered
     const order = await Order.findById(orderId).populate('user', 'email')
