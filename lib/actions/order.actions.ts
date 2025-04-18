@@ -65,6 +65,11 @@ export const createOrderFromCart = async (
 export async function updateOrderToPaid(orderId: string) {
   try {
     await connectToDatabase()
+
+    const User = (await import('@/lib/db/models/user.model')).default;
+
+    console.log('User model:', User); // should not be undefined or empty
+
     const order = await Order.findById(orderId).populate<{
       user: { email: string; name: string }
     }>('user', 'name email')
@@ -292,23 +297,23 @@ export const calcDeliveryDateAndPrice = async ({
 
   const deliveryDate =
     availableDeliveryDates[
-      deliveryDateIndex === undefined
-        ? availableDeliveryDates.length - 1
-        : deliveryDateIndex
+    deliveryDateIndex === undefined
+      ? availableDeliveryDates.length - 1
+      : deliveryDateIndex
     ]
   const shippingPrice =
     !shippingAddress || !deliveryDate
       ? undefined
       : deliveryDate.freeShippingMinPrice > 0 &&
-          itemsPrice >= deliveryDate.freeShippingMinPrice
+        itemsPrice >= deliveryDate.freeShippingMinPrice
         ? 0
         : deliveryDate.shippingPrice
 
   const taxPrice = !shippingAddress ? undefined : round2(itemsPrice * 0.15)
   const totalPrice = round2(
     itemsPrice +
-      (shippingPrice ? round2(shippingPrice) : 0) +
-      (taxPrice ? round2(taxPrice) : 0)
+    (shippingPrice ? round2(shippingPrice) : 0) +
+    (taxPrice ? round2(taxPrice) : 0)
   )
   return {
     availableDeliveryDates,
