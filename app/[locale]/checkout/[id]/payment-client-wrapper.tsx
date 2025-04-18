@@ -8,7 +8,7 @@ import PaymentForm from './payment-form';
 import { IOrder } from '@/lib/db/models/order.model';
 import { Session } from 'next-auth';
 
-const PaymentClientWrapper = ({ order, session }: { order: IOrder, session: Session | null }) => {
+const PaymentClientWrapper = ({ order, session, stripeSecretKey }: { order: IOrder, session: Session | null, stripeSecretKey: string }) => {
   const { getCurrency } = useSettingStore();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [razorpayOrder, setRazorpayOrder] = useState<{ id: string } | null>(null);
@@ -16,9 +16,10 @@ const PaymentClientWrapper = ({ order, session }: { order: IOrder, session: Sess
   useEffect(() => {
     const fetchPaymentDetails = async () => {
       if (order.paymentMethod === 'Stripe' && !order.isPaid) {
-        const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY as string, {
-          apiVersion: '2025-02-24.acacia',
-        });
+        console.log('Stripe order:', order); // Log the order object for debugging
+        console.log('Stripe secret key:', stripeSecretKey); // Log the secret key for debugging
+        const stripe = new Stripe(stripeSecretKey);
+
 
         const paymentIntent = await stripe.paymentIntents.create({
           amount: Math.round(order.totalPrice * getCurrency().convertRate * 100),
