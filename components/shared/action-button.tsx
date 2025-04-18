@@ -41,7 +41,7 @@ export default function ActionButton({
               <Button
                 variant='outline'
                 size='sm'
-                className='rounded-full'
+                className='rounded-full text-white bg-gray-900 hover:text-gray-800 hover:bg-white'
                 onClick={() => {
                   if (Reloading) {
                     window.location.reload()
